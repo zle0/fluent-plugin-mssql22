@@ -1,4 +1,4 @@
-# fluent-plugin-mssql22
+# Fluent::Plugin::Mssql22
 
 [![Gem Version](https://img.shields.io/gem/v/fluent-plugin-mssql22.svg)](https://rubygems.org/gems/fluent-plugin-mssql22) 
 
