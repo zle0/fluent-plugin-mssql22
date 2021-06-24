@@ -29,10 +29,11 @@ bundle
 
 ## Configuration
 - query : A single SQL statement using placeholder (*?{key}*)
-- poolsize : 
-- session_options : Session SET options separated by semicolons (;)
+- poolsize : Size of [connection pool](https://github.com/mperham/connection_pool)
+- session_options : [Session SET options](https://docs.microsoft.com/en-us/sql/t-sql/statements/set-statements-transact-sql?view=sql-server-ver15). separated by semicolons (;) 
 
-#### TinyTds Configuration
+
+#### [TinyTds Configuration](https://github.com/rails-sqlserver/tiny_tds#tinytdsclient-usage)
 * username 
 * password  
 * host 
