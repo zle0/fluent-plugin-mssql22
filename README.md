@@ -29,7 +29,7 @@ bundle
 
 ## Configuration
 - query : A single SQL statement using placeholder (*?{key}*)
-- poolsize 
+- poolsize : 
 - session_options : Session SET options separated by semicolons (;)
 
 #### TinyTds Configuration
