@@ -11,14 +11,23 @@ class Mssql22Output < Fluent::BufferedOutput
   config_param :username, :string
   config_param :password, :string
   config_param :host, :string
-  config_param :port, :string
+  config_param :port, :integer
   config_param :database, :string
-  config_param :sql, :string
+  config_param :query, :string
+  config_param :poolsize, :integer, default: 10
+  config_param :timeout, :integer, default: 60
+  config_param :login_timeout, :integer, default: 10
+  config_param :session_options, :string, default: nil
 
   def configure(conf)
     super
-    @keys = @sql.scan(/\?\{(.*?)\}/).flatten
+    @keys = @query.scan(/\?\{(.*?)\}/).flatten
     @format_proc = Proc.new{|tag, time, record| @keys.map{|k| [k,record[k]]}.to_h}
+    
+    unless @session_options.nil? 
+      @session_sets = @session_options.split(';')
+    end
+
   end
 
   def format(tag, time, record)
@@ -27,20 +36,29 @@ class Mssql22Output < Fluent::BufferedOutput
 
   def client
     begin
-      pool = ConnectionPool.new(size: 100) {
-        TinyTds::Client.new(
+      pool = ConnectionPool.new(size: @poolsize) {
+        client = TinyTds::Client.new(
           username: @username,
           password: @password,
           host: @host,
           port: @port,
           database: @database,
-          appname: 'fluentd - tinytds',
-		  timeout: 60
+          appname: 'fluentd-tinytds',
+          timeout: @timeout,
+          login_timeout: @login_timeout
         )
+        
+        unless @session_sets.nil? 
+          @session_sets.each do |set|
+            client.execute(set).do
+          end
+        end
+ 
+        client
       }
 	  
-    rescue
-      raise Fluent::ConfigError, "Cannot open database, check user or password"
+    rescue Exception => e
+      raise Fluent::ConfigError, e.message
     end
 
     pool
@@ -55,36 +73,24 @@ class Mssql22Output < Fluent::BufferedOutput
     super
   end
 
-  def sql_bind(data)
-    sql = @sql
+  def query_bind(data)
+    query = @query
     data.map do |k,v|
-      sql = sql.gsub("?{#{k}}",v.to_s.gsub(/'/,"''"))
+      query = query.gsub("?{#{k}}",v.to_s.gsub(/'/,"''"))
       
     end
-    sql
+    query
   end
  
   def write(chunk)
     begin
-	  @cp.with { |c| c.execute('SELECT 1;').do }
-	rescue
+      @cp.with { |c| c.execute('select 1;').do }
+    rescue
       @cp = client
-    ensure
-      @cp.with do |c|
-        c.execute('SET ANSI_NULLS ON;').do
-        c.execute('SET ANSI_PADDING ON;').do
-        c.execute('SET ANSI_WARNINGS ON;').do
-        c.execute('SET ARITHABORT ON;').do
-        c.execute('SET CONCAT_NULL_YIELDS_NULL ON;').do
-        c.execute('SET NUMERIC_ROUNDABORT ON;').do
-        c.execute('SET QUOTED_IDENTIFIER ON;').do
-        c.execute('SET NUMERIC_ROUNDABORT OFF;').do
-	  end
     end
 
     chunk.msgpack_each do |tag, time, data|
-      #p sql_bind(data)
-      @cp.with {|c| c.execute( sql_bind(data) ).do}
+      @cp.with {|c| c.execute( query_bind(data) ).do}
     end
   end
 

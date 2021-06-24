@@ -1,7 +1,6 @@
-
 Gem::Specification.new do |spec|
   spec.name    = "fluent-plugin-mssql22"
-  spec.version = "0.1.1"
+  spec.version = "0.1.2"
   spec.authors = ["zle0"]
   spec.email   = ["zle0572"]
 
@@ -10,7 +9,7 @@ Gem::Specification.new do |spec|
   spec.homepage      = "http://github.com/zle0/fluent-plugin-mssql22"
   spec.license       = "MIT"
 
-  spec.files         = ["lib/fluent/plugin/out_mssql2.rb"]
+  spec.files         = ["lib/fluent/plugin/out_mssql22.rb"]
   spec.require_paths = ["lib"]
 
   spec.add_dependency 	'connection_pool', '~> 2.2'
