@@ -59,7 +59,7 @@ bundle
 
   <buffer>
     @type memory
-    total_limit_size 1024GB
+    total_limit_size 128MB
     flush_interval 1s
     flush_at_shutdown true
     flush_thread_count 20
