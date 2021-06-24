@@ -33,7 +33,7 @@ bundle
 - session_options : [Session SET options](https://docs.microsoft.com/en-us/sql/t-sql/statements/set-statements-transact-sql?view=sql-server-ver15). separated by semicolons (;) 
 
 
-#### [TinyTds Configuration](https://github.com/rails-sqlserver/tiny_tds#tinytdsclient-usage)
+* ([TinyTds Configuration](https://github.com/rails-sqlserver/tiny_tds#tinytdsclient-usage)↓)
 * username 
 * password  
 * host 
