@@ -1,8 +1,6 @@
 # fluent-plugin-mssql22
 
-[Fluentd](https://fluentd.org/) output plugin to do something.
-
-TODO: write description for you plugin.
+fluent plugin to write to Microsoft SQL Server"
 
 ## Installation
 
