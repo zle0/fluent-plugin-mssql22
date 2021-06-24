@@ -1,6 +1,6 @@
 # fluent-plugin-mssql22
 
-fluent plugin to write to Microsoft SQL Server"
+fluent plugin to write to Microsoft SQL Server
 
 ## Installation
 
